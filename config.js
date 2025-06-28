@@ -1,4 +1,4 @@
-// ChatApp Configuration
+https://github.com/juniorasura/Message#// ChatApp Configuration
 const ChatAppConfig = {
     // Server Configuration
     // Choose one of the following options:
