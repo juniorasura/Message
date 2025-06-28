@@ -266,10 +266,14 @@ class ChatApp {
         
         if (isOnline) {
             indicator.className = 'status-indicator online';
-            text.textContent = 'Server Online';
+            // Show which server is being used
+            const serverUrl = this.api.baseUrl.replace('/api', '');
+            text.textContent = `Server Online (${serverUrl})`;
         } else {
             indicator.className = 'status-indicator offline';
-            text.textContent = 'Server Offline';
+            // Show which server failed to connect
+            const serverUrl = this.api.baseUrl.replace('/api', '');
+            text.textContent = `Server Offline (${serverUrl})`;
         }
     }
 

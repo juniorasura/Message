@@ -1,8 +1,32 @@
 // API Service for ChatApp
 class ApiService {
     constructor() {
-        this.baseUrl = 'http://localhost:3000/api';
+        // Use configuration for base URL
+        this.baseUrl = this.getApiBaseUrl();
         this.currentUser = null;
+    }
+
+    // Get the appropriate API base URL based on current location
+    getApiBaseUrl() {
+        const currentHost = window.location.hostname;
+        
+        // If accessing from localhost, use localhost:3000
+        if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+            return 'http://localhost:3000/api';
+        }
+        
+        // If accessing from GitHub Pages, use the network server IP
+        if (currentHost.includes('github.io')) {
+            return 'http://192.168.18.6:3000/api';
+        }
+        
+        // For other domains, use the configured server
+        if (typeof ChatAppConfig !== 'undefined') {
+            return ChatAppConfig.getServerUrl();
+        } else {
+            // Fallback to network server if config is not available
+            return 'http://192.168.18.6:3000/api';
+        }
     }
 
     // Set current user
