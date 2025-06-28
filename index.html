@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatApp - Connect with Friends</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login/Register Container -->
+    <div id="auth-container" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1><i class="fas fa-comments"></i> ChatApp</h1>
+                <p>Connect with your friends</p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <input type="text" id="login-username" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="show-register">Register</a></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <h2>Register</h2>
+                <div class="form-group">
+                    <input type="text" id="register-username" placeholder="Username (unique)" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="register-email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="register-password" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="register-confirm-password" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="show-login">Login</a></p>
+            </form>
+
+            <!-- Server Status -->
+            <div class="server-status">
+                <div id="server-status-indicator" class="status-indicator offline">
+                    <i class="fas fa-circle"></i>
+                    <span id="server-status-text">Server Offline</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chat Container -->
+    <div id="chat-container" class="chat-container hidden">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Profile Section -->
+            <div class="profile-section">
+                <div class="profile-info">
+                    <img id="user-avatar" src="https://via.placeholder.com/50" alt="Profile" class="avatar">
+                    <div class="profile-details">
+                        <h3 id="user-name">User Name</h3>
+                        <p id="user-status">Online</p>
+                        <p id="user-timezone" class="timezone-info">
+                            <i class="fas fa-clock"></i>
+                            <span id="timezone-text">Detecting timezone...</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button id="location-btn" class="btn-icon" title="Get Location Timezone">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                    <button id="profile-btn" class="btn-icon" title="Profile">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <button id="logout-btn" class="btn-icon" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" id="search-friends" placeholder="Search friends...">
+                <i class="fas fa-search"></i>
+            </div>
+
+            <!-- Friends List -->
+            <div class="friends-list" id="friends-list">
+                <!-- Friends will be populated here -->
+            </div>
+
+            <!-- Add Friend Button -->
+            <button id="add-friend-btn" class="btn-add-friend">
+                <i class="fas fa-plus"></i> Add Friend
+            </button>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area">
+            <!-- Chat Header -->
+            <div class="chat-header" id="chat-header">
+                <div class="chat-header-info">
+                    <img id="chat-avatar" src="https://via.placeholder.com/40" alt="Friend Avatar" class="avatar">
+                    <div>
+                        <h3 id="chat-friend-name">Select a friend</h3>
+                        <p id="chat-friend-status">Online</p>
+                    </div>
+                </div>
+                <div class="chat-actions">
+                    <div class="chat-menu">
+                        <button class="btn-icon" id="chat-menu-btn" title="More options">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="chat-menu-dropdown hidden" id="chat-menu-dropdown">
+                            <button class="menu-item" id="unfriend-btn">
+                                <i class="fas fa-user-minus"></i>
+                                Unfriend
+                            </button>
+                        </div>
+                    </div>
+                    <button class="btn-icon" id="notifications-btn" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span id="notifications-badge" class="notification-badge hidden">0</span>
+                    </button>
+                    <button class="btn-icon" id="friend-requests-btn" title="Friend Requests">
+                        <i class="fas fa-user-plus"></i>
+                        <span id="friend-requests-badge" class="notification-badge hidden">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div class="messages-area" id="messages-area">
+                <div class="welcome-message">
+                    <i class="fas fa-comments"></i>
+                    <h2>Welcome to ChatApp!</h2>
+                    <p>Select a friend from the sidebar to start chatting</p>
+                </div>
+            </div>
+
+            <!-- Message Input -->
+            <div class="message-input" id="message-input" style="display: none;">
+                <div class="input-container">
+                    <button id="emoji-btn" class="btn-icon" title="Emoji">
+                        <i class="fas fa-smile"></i>
+                    </button>
+                    <button id="attach-btn" class="btn-icon" title="Attach File">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="text" id="message-text" placeholder="Type a message...">
+                    <button id="send-btn" class="btn-send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <input type="file" id="file-input" accept="image/*,video/*,application/*,.pdf,.doc,.docx,.txt,.zip,.rar" style="display: none;">
+                
+                <!-- Emoji Picker -->
+                <div id="emoji-picker" class="emoji-picker hidden">
+                    <div class="emoji-categories">
+                        <button class="emoji-category active" data-category="smileys">😊</button>
+                        <button class="emoji-category" data-category="animals">🐶</button>
+                        <button class="emoji-category" data-category="food">🍕</button>
+                        <button class="emoji-category" data-category="activities">⚽</button>
+                        <button class="emoji-category" data-category="travel">✈️</button>
+                        <button class="emoji-category" data-category="objects">💡</button>
+                    </div>
+                    <div class="emoji-list" id="emoji-list">
+                        <!-- Emojis will be populated here -->
+                    </div>
+                </div>
+                
+                <!-- File Upload Progress -->
+                <div id="upload-progress" class="upload-progress hidden">
+                    <div class="upload-info">
+                        <i class="fas fa-file"></i>
+                        <span id="upload-filename">Uploading...</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <button id="cancel-upload" class="btn-icon">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <button class="close-btn" id="close-profile-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="profile-form">
+                    <div class="form-group">
+                        <label>Profile Picture</label>
+                        <div class="avatar-upload">
+                            <img id="profile-avatar-preview" src="https://via.placeholder.com/100" alt="Profile">
+                            <input type="file" id="avatar-input" accept="image/*">
+                            <button type="button" id="upload-avatar-btn" class="btn-secondary">Upload Photo</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Display Name</label>
+                        <input type="text" id="profile-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="profile-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <input type="text" id="profile-status" placeholder="What's on your mind?">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="profile-email" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Friend Modal -->
+    <div id="add-friend-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Friend</h2>
+                <button class="close-btn" id="close-add-friend-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-friend-form">
+                    <div class="form-group">
+                        <label>Friend's Username</label>
+                        <input type="text" id="friend-identifier" placeholder="Enter username" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Send Friend Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notifications-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Notifications</h2>
+                <div class="modal-actions">
+                    <button id="mark-all-read-btn" class="btn-secondary">Mark All as Read</button>
+                    <button class="close-btn" id="close-notifications-modal">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div id="notifications-list">
+                    <!-- Notifications will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Friend Requests Modal -->
+    <div id="friend-requests-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Friend Requests</h2>
+                <button class="close-btn" id="close-friend-requests-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="friend-requests-list">
+                    <!-- Friend requests will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
