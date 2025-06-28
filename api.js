@@ -1,31 +1,36 @@
 // API Service for ChatApp
 class ApiService {
     constructor() {
-        // Use configuration for base URL
-        this.baseUrl = this.getApiBaseUrl();
+        // Initialize baseUrl as null, will be set when needed
+        this.baseUrl = null;
         this.currentUser = null;
     }
 
     // Get the appropriate API base URL based on current location
     getApiBaseUrl() {
+        // If baseUrl is already set, return it
+        if (this.baseUrl) {
+            return this.baseUrl;
+        }
+
         const currentHost = window.location.hostname;
         
         // If accessing from localhost, use localhost:3000
         if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
-            return 'http://localhost:3000/api';
+            this.baseUrl = 'http://localhost:3000/api';
+            return this.baseUrl;
         }
         
-        // If accessing from GitHub Pages, use the network server IP
-        if (currentHost.includes('github.io')) {
-            return 'http://192.168.18.6:3000/api';
-        }
-        
-        // For other domains, use the configured server
+        // If accessing from GitHub Pages or any other domain, use the configured server
         if (typeof ChatAppConfig !== 'undefined') {
-            return ChatAppConfig.getServerUrl();
+            this.baseUrl = ChatAppConfig.getServerUrl();
+            console.log('Using ChatAppConfig server URL:', this.baseUrl);
+            return this.baseUrl;
         } else {
             // Fallback to network server if config is not available
-            return 'http://192.168.18.6:3000/api';
+            console.warn('ChatAppConfig not found, using fallback URL');
+            this.baseUrl = 'http://192.168.18.6:3000/api';
+            return this.baseUrl;
         }
     }
 
@@ -54,7 +59,7 @@ class ApiService {
 
     // Generic API request
     async makeRequest(endpoint, options = {}) {
-        const url = `${this.baseUrl}${endpoint}`;
+        const url = `${this.getApiBaseUrl()}${endpoint}`;
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -232,7 +237,7 @@ class ApiService {
     // Check server connection
     async checkConnection() {
         try {
-            const response = await fetch(`${this.baseUrl}/health`, {
+            const response = await fetch(`${this.getApiBaseUrl()}/health`, {
                 method: 'GET',
                 timeout: 5000
             });

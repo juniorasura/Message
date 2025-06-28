@@ -230,7 +230,7 @@ class ChatApp {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
             
-            const response = await fetch(`${this.api.baseUrl}/health`, {
+            const response = await fetch(`${this.api.getApiBaseUrl()}/health`, {
                 method: 'GET',
                 signal: controller.signal
             });
@@ -267,12 +267,12 @@ class ChatApp {
         if (isOnline) {
             indicator.className = 'status-indicator online';
             // Show which server is being used
-            const serverUrl = this.api.baseUrl.replace('/api', '');
+            const serverUrl = this.api.getApiBaseUrl().replace('/api', '');
             text.textContent = `Server Online (${serverUrl})`;
         } else {
             indicator.className = 'status-indicator offline';
             // Show which server failed to connect
-            const serverUrl = this.api.baseUrl.replace('/api', '');
+            const serverUrl = this.api.getApiBaseUrl().replace('/api', '');
             text.textContent = `Server Offline (${serverUrl})`;
         }
     }
