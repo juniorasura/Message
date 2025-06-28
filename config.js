@@ -9,11 +9,14 @@ const ChatAppConfig = {
     // Option 2: Same network access (replace with your PC's IP)
     NETWORK_SERVER: 'http://192.168.18.6:3000/api',
     
-    // Option 3: Deployed backend (replace with your deployed URL)
+    // Option 3: Railway deployment (replace with your Railway URL)
+    RAILWAY_SERVER: 'https://your-app-name.railway.app/api',
+    
+    // Option 4: Other deployed backend (replace with your deployed URL)
     DEPLOYED_SERVER: 'https://your-deployed-backend.herokuapp.com/api',
     
     // Current active server - change this to switch between options
-    ACTIVE_SERVER: 'NETWORK_SERVER', // Options: 'LOCAL_SERVER', 'NETWORK_SERVER', 'DEPLOYED_SERVER'
+    ACTIVE_SERVER: 'NETWORK_SERVER', // Options: 'LOCAL_SERVER', 'NETWORK_SERVER', 'RAILWAY_SERVER', 'DEPLOYED_SERVER'
     
     // Get the current server URL
     getServerUrl() {
@@ -22,6 +25,8 @@ const ChatAppConfig = {
                 return this.LOCAL_SERVER;
             case 'NETWORK_SERVER':
                 return this.NETWORK_SERVER;
+            case 'RAILWAY_SERVER':
+                return this.RAILWAY_SERVER;
             case 'DEPLOYED_SERVER':
                 return this.DEPLOYED_SERVER;
             default:
